@@ -1,0 +1,34 @@
+[Unit]
+Description=Fuel Talon Telegram Bot
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=bot
+Group=bot
+WorkingDirectory=/opt/fuel-bot
+ExecStart=/opt/fuel-bot/venv/bin/python /opt/fuel-bot/run.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=fuel-bot
+
+# Переменные окружения (альтернатива .env файлу)
+# Environment=BOT_TOKEN=your_token_here
+# Environment=ADMIN_IDS=123456789,987654321
+
+# Ограничения ресурсов
+MemoryMax=512M
+CPUQuota=50%
+
+# Безопасность
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/fuel-bot
+
+[Install]
+WantedBy=multi-user.target
