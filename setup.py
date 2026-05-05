@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Скрипт быстрой настройки проекта
-Проверяет конфигурацию и помогает настроить бота
+Quick Project Setup Script
+Checks the configuration and helps you set up the bot
 """
 
 import os
@@ -10,7 +10,7 @@ import asyncio
 from pathlib import Path
 
 def check_env_file():
-    """Проверка .env файла"""
+    """Checking the .env file"""
     print("📋 Проверка .env файла...")
     
     if not Path(".env").exists():
@@ -25,7 +25,7 @@ def check_env_file():
             print("❌ .env.example тоже не найден!")
             return False
     
-    # Читаем .env файл
+    # Reading the .env file
     env_vars = {}
     with open(".env", "r", encoding="utf-8") as f:
         for line in f:
@@ -34,7 +34,7 @@ def check_env_file():
                 key, value = line.split("=", 1)
                 env_vars[key] = value
     
-    # Проверяем обязательные переменные
+    # Checking required variables
     required_vars = ["BOT_TOKEN", "ADMIN_IDS"]
     missing_vars = []
     
@@ -46,13 +46,13 @@ def check_env_file():
         print(f"❌ Отсутствуют переменные: {', '.join(missing_vars)}")
         return False
     
-    # Проверяем BOT_TOKEN
+    # Checking BOT_TOKEN
     bot_token = env_vars.get("BOT_TOKEN", "")
     if not bot_token.count(":") == 1 or len(bot_token) < 40:
         print("❌ BOT_TOKEN выглядит некорректно")
         return False
     
-    # Проверяем ADMIN_IDS
+    # Checking ADMIN_IDS
     admin_ids = env_vars.get("ADMIN_IDS", "")
     if admin_ids in ["123456789", "123456789,987654321"]:
         print("⚠️ ADMIN_IDS содержит тестовые значения!")
@@ -63,7 +63,7 @@ def check_env_file():
     return True
 
 def check_dependencies():
-    """Проверка зависимостей"""
+    """Checking dependencies"""
     print("\n📦 Проверка зависимостей...")
     
     required_packages = [
@@ -93,7 +93,7 @@ def check_dependencies():
     return True
 
 async def test_bot_connection():
-    """Тест подключения к Telegram"""
+    """Telegram connection test"""
     print("\n🤖 Тестирование подключения к Telegram...")
     
     try:
@@ -102,7 +102,7 @@ async def test_bot_connection():
         
         bot = Bot(token=config.BOT_TOKEN)
         
-        # Получаем информацию о боте
+        # Getting information about the bot
         bot_info = await bot.get_me()
         print(f"✅ Бот подключен: @{bot_info.username}")
         print(f"📝 Имя бота: {bot_info.first_name}")
@@ -116,17 +116,17 @@ async def test_bot_connection():
         return False
 
 async def test_database():
-    """Тест базы данных"""
+    """Test of DB"""
     print("\n🗄️ Тестирование базы данных...")
     
     try:
         from database import db
         
-        # Инициализация БД
+        # Initializing the database
         await db.init_db()
         print("✅ База данных инициализирована")
         
-        # Тест операций
+        # Test of operations
         test_user_id = 999999999
         await db.add_user(test_user_id, "test", "Test User")
         user = await db.get_user(test_user_id)
@@ -143,7 +143,7 @@ async def test_database():
         return False
 
 def create_directories():
-    """Создание необходимых директорий"""
+    """Creating the necessary directories"""
     print("\n📁 Создание директорий...")
     
     directories = ["logs", "qr_codes"]
@@ -153,11 +153,11 @@ def create_directories():
         print(f"✅ {directory}/")
 
 async def main():
-    """Основная функция настройки"""
+    """Basic setting function"""
     print("🚀 Настройка Fuel Talon Bot")
     print("=" * 50)
     
-    # Проверки
+    # Checking
     checks = [
         ("Конфигурация", check_env_file),
         ("Зависимости", check_dependencies),
@@ -181,7 +181,7 @@ async def main():
             print(f"❌ Ошибка в проверке '{name}': {e}")
             all_passed = False
     
-    # Создаем директории
+    # Create directories
     create_directories()
     
     print(f"\n📊 Результат настройки:")
