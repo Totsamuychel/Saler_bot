@@ -15,12 +15,12 @@ class BroadcastStates(StatesGroup):
     waiting_message = State()
 
 def is_admin(user_id: int) -> bool:
-    """Проверка прав администратора"""
+    """Checking administrator rights"""
     return user_id in config.ADMIN_IDS
 
 @router.message(F.text.in_(["⚙️ Админ-панель", "⚙️ Адмін-панель"]))
 async def admin_panel_handler(message: Message):
-    """Вход в админ-панель"""
+    """Login to the admin panel"""
     if not is_admin(message.from_user.id):
         await message.answer("❌ У вас нет доступа к админ-панели")
         return
@@ -33,7 +33,7 @@ async def admin_panel_handler(message: Message):
 
 @router.message(F.text.in_(["📊 Статистика", "📊 Статистика"]))
 async def stats_handler(message: Message):
-    """Показ статистики"""
+    """Show statistics"""
     if not is_admin(message.from_user.id):
         return
     
@@ -52,7 +52,7 @@ async def stats_handler(message: Message):
 
 @router.message(F.text.in_(["👥 Пользователи", "👥 Користувачі"]))
 async def users_handler(message: Message):
-    """Список пользователей"""
+    """List of users"""
     if not is_admin(message.from_user.id):
         return
     
@@ -82,7 +82,7 @@ async def users_handler(message: Message):
 
 @router.message(F.text.in_(["🧾 История платежей", "🧾 Історія платежів"]))
 async def payments_history_handler(message: Message):
-    """История платежей"""
+    """Payment history"""
     if not is_admin(message.from_user.id):
         return
     
@@ -110,7 +110,7 @@ async def payments_history_handler(message: Message):
 
 @router.message(F.text.in_(["📬 Рассылка", "📬 Розсилка"]))
 async def broadcast_handler(message: Message, state: FSMContext):
-    """Начало рассылки"""
+    """Start of mailing"""
     if not is_admin(message.from_user.id):
         return
     
@@ -123,7 +123,7 @@ async def broadcast_handler(message: Message, state: FSMContext):
 
 @router.message(BroadcastStates.waiting_message)
 async def broadcast_message_handler(message: Message, state: FSMContext):
-    """Обработка сообщения для рассылки"""
+    """Processing a message for distribution"""
     if not is_admin(message.from_user.id):
         return
     
@@ -144,7 +144,7 @@ async def broadcast_message_handler(message: Message, state: FSMContext):
 
 @router.callback_query(F.data == "confirm_broadcast")
 async def confirm_broadcast_handler(callback: CallbackQuery, state: FSMContext):
-    """Подтверждение рассылки"""
+    """Confirmation of mailing"""
     if not is_admin(callback.from_user.id):
         return
     
@@ -155,7 +155,7 @@ async def confirm_broadcast_handler(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Сообщение не найдено")
         return
     
-    # Получаем всех пользователей
+    # We get all users
     users = await db.get_all_users()
     
     sent_count = 0
@@ -186,13 +186,13 @@ async def confirm_broadcast_handler(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "cancel_broadcast")
 async def cancel_broadcast_handler(callback: CallbackQuery, state: FSMContext):
-    """Отмена рассылки"""
+    """Cancel mailing list"""
     await callback.message.edit_text("❌ Рассылка отменена")
     await state.clear()
 
 @router.message(F.text.in_(["➕ Управление талонами", "➕ Управління талонами"]))
 async def manage_talons_handler(message: Message):
-    """Управление талонами"""
+    """Coupon management"""
     if not is_admin(message.from_user.id):
         return
     
