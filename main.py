@@ -1,7 +1,5 @@
 """
-Telegram-бот для покупки талонов на бензин
-Версия: 1.0
-Автор: AI Assistant
+Telegram bot for purchasing gas coupons
 """
 
 import asyncio
@@ -11,12 +9,12 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-# Импорты модулей бота
+# Bot module imports
 import config
 from database import db
 from handlers import start, menu, admin, payment, support
 
-# Настройка логирования
+# Setting up logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -29,30 +27,30 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 async def main():
-    """Основная функция запуска бота"""
+    """The main function of launching a bot"""
     
-    # Проверяем наличие токена
+    # Checking the presence of a token
     if not config.BOT_TOKEN:
         logger.error("BOT_TOKEN not found in environment variables!")
         return
     
-    # Инициализируем бота
+    # Initializing the bot
     bot = Bot(
         token=config.BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
     
-    # Создаем диспетчер
+    # Creating a dispatcher
     dp = Dispatcher()
     
-    # Подключаем роутеры
+    # Connecting routers
     dp.include_router(start.router)
     dp.include_router(menu.router)
     dp.include_router(payment.router)
     dp.include_router(admin.router)
     dp.include_router(support.router)
     
-    # Инициализируем базу данных
+    # Initializing the database
     try:
         await db.init_db()
         logger.info("Database initialized successfully")
@@ -60,7 +58,7 @@ async def main():
         logger.error(f"Failed to initialize database: {e}")
         return
     
-    # Получаем информацию о боте
+    # Getting information about the bot
     try:
         bot_info = await bot.get_me()
         logger.info(f"Bot started: @{bot_info.username}")
@@ -70,7 +68,7 @@ async def main():
         logger.error(f"Failed to get bot info: {e}")
         return
     
-    # Запускаем бота
+    # Launch a bot
     try:
         logger.info("Starting bot polling...")
         await dp.start_polling(bot)
