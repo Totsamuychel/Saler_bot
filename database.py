@@ -10,9 +10,9 @@ class Database:
         self.db_path = db_path
     
     async def init_db(self):
-        """Инициализация базы данных"""
+        """Initialization DB"""
         async with aiosqlite.connect(self.db_path) as db:
-            # Таблица пользователей
+            # Table of users
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,7 +27,7 @@ class Database:
                 )
             """)
             
-            # Таблица талонов
+            # Table of coupons
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS talons (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +42,7 @@ class Database:
                 )
             """)
             
-            # Таблица платежей
+            # Table of payments
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS payments (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -64,10 +64,10 @@ class Database:
     
     async def add_user(self, telegram_id: int, username: str = None, full_name: str = None, 
                       language: str = "ru", referred_by: int = None) -> bool:
-        """Добавление нового пользователя"""
+        """Add new user"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
-                # Генерируем реферальный код
+                # Generates referral code
                 ref_code = f"ref_{telegram_id}"
                 
                 await db.execute("""
@@ -83,7 +83,7 @@ class Database:
             return False
     
     async def get_user(self, telegram_id: int) -> Optional[Dict]:
-        """Получение пользователя по telegram_id"""
+        """Get user by telegram_id"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 db.row_factory = aiosqlite.Row
@@ -97,7 +97,7 @@ class Database:
             return None
     
     async def update_user_language(self, telegram_id: int, language: str) -> bool:
-        """Обновление языка пользователя"""
+        """Update lang user"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 await db.execute(
@@ -111,7 +111,7 @@ class Database:
             return False
     
     async def create_talon(self, user_id: int, liters: int, price: int) -> Optional[int]:
-        """Создание нового талона"""
+        """Create new coupons"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 cursor = await db.execute("""
@@ -127,7 +127,7 @@ class Database:
             return None
     
     async def get_user_talons(self, user_id: int) -> List[Dict]:
-        """Получение талонов пользователя"""
+        """Get coupons of user"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 db.row_factory = aiosqlite.Row
@@ -142,7 +142,7 @@ class Database:
             return []
     
     async def create_payment(self, user_id: int, talon_id: int, amount: int) -> Optional[int]:
-        """Создание записи о платеже"""
+        """Create records about payment"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 cursor = await db.execute("""
@@ -158,17 +158,17 @@ class Database:
             return None
     
     async def confirm_payment(self, payment_id: int, confirmed_by: int) -> bool:
-        """Подтверждение платежа админом"""
+        """Payment confirmation by the administrator"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
-                # Обновляем статус платежа
+                # Updating the payment status
                 await db.execute("""
                     UPDATE payments 
                     SET status = 'confirmed', confirmed_by = ?, confirmed_at = CURRENT_TIMESTAMP
                     WHERE id = ?
                 """, (confirmed_by, payment_id))
                 
-                # Получаем talon_id для активации талона
+                # Get talon_id for activation
                 cursor = await db.execute(
                     "SELECT talon_id FROM payments WHERE id = ?", (payment_id,)
                 )
@@ -176,7 +176,7 @@ class Database:
                 
                 if row:
                     talon_id = row[0]
-                    # Активируем талон
+                    # Activate coupons
                     await db.execute("""
                         UPDATE talons SET status = 'active' WHERE id = ?
                     """, (talon_id,))
@@ -188,7 +188,7 @@ class Database:
             return False
     
     async def get_pending_payments(self) -> List[Dict]:
-        """Получение неподтвержденных платежей"""
+        """Receiving unconfirmed payments"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 db.row_factory = aiosqlite.Row
@@ -207,22 +207,22 @@ class Database:
             return []
     
     async def get_stats(self) -> Dict:
-        """Получение статистики"""
+        """Obtaining statistics"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
-                # Общее количество пользователей
+                # Total number of users
                 cursor = await db.execute("SELECT COUNT(*) FROM users")
                 total_users = (await cursor.fetchone())[0]
                 
-                # Общее количество талонов
+                # Total number of coupons
                 cursor = await db.execute("SELECT COUNT(*) FROM talons WHERE status = 'active'")
                 active_talons = (await cursor.fetchone())[0]
                 
-                # Общая выручка
+                # Total revenue
                 cursor = await db.execute("SELECT SUM(amount) FROM payments WHERE status = 'confirmed'")
                 total_revenue = (await cursor.fetchone())[0] or 0
                 
-                # Количество продаж сегодня
+                # Number of sales today
                 cursor = await db.execute("""
                     SELECT COUNT(*) FROM payments 
                     WHERE status = 'confirmed' AND DATE(created_at) = DATE('now')
@@ -240,7 +240,7 @@ class Database:
             return {}
     
     async def get_all_users(self) -> List[Dict]:
-        """Получение всех пользователей"""
+        """Getting all users"""
         try:
             async with aiosqlite.connect(self.db_path) as db:
                 db.row_factory = aiosqlite.Row
@@ -254,5 +254,5 @@ class Database:
             logger.error(f"Error getting all users: {e}")
             return []
 
-# Глобальный экземпляр базы данных
+# Global database instance
 db = Database()
