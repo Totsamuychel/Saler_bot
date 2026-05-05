@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Скрипт для получения вашего Telegram ID
-Запустите этот скрипт, затем напишите боту /start
+Script for getting your Telegram ID
+Run this script, then type /start in the bot
 """
 
 import asyncio
@@ -10,12 +10,12 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 import config
 
-# Отключаем лишние логи
+# Disabling unnecessary logs
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 async def get_user_id():
-    """Получение ID пользователя"""
+    """Obtaining a user ID"""
     
     if not config.BOT_TOKEN:
         print("❌ BOT_TOKEN не найден в .env файле!")
