@@ -1,15 +1,15 @@
-"""Калькулятор цен на топливо"""
+"""Fuel price calculator"""
 import config
 
 def calculate_price(liters: int) -> int:
     """
-    Рассчитывает общую стоимость топлива
-    
+    Calculates the total fuel cost.
+
     Args:
-        liters: Количество литров
-        
+        liters: Number of liters
+
     Returns:
-        Общая стоимость в гривнах
+           Total cost in hryvnias
     """
     if liters >= config.WHOLESALE_THRESHOLD:
         price_per_liter = config.WHOLESALE_PRICE
@@ -20,13 +20,13 @@ def calculate_price(liters: int) -> int:
 
 def get_price_per_liter(liters: int) -> int:
     """
-    Возвращает цену за литр в зависимости от количества
+    Returns the price per liter based on quantity
     
     Args:
-        liters: Количество литров
+        liters: Number of liters
         
     Returns:
-        Цена за литр в гривнах
+        Price per liter in hryvnia
     """
     if liters >= config.WHOLESALE_THRESHOLD:
         return config.WHOLESALE_PRICE
@@ -35,25 +35,25 @@ def get_price_per_liter(liters: int) -> int:
 
 def is_wholesale(liters: int) -> bool:
     """
-    Проверяет, является ли покупка оптовой
+    Checks if the purchase is wholesale
     
     Args:
-        liters: Количество литров
+        liters: Number of liters
         
     Returns:
-        True если оптовая покупка, False если розничная
+        True if wholesale, False if retail
     """
     return liters >= config.WHOLESALE_THRESHOLD
 
 def calculate_savings(liters: int) -> int:
     """
-    Рассчитывает экономию при оптовой покупке
+    Calculates savings when buying in bulk
     
     Args:
-        liters: Количество литров
+        liters: Number of liters
         
     Returns:
-        Сумма экономии в гривнах
+        Amount of savings in hryvnias
     """
     if not is_wholesale(liters):
         return 0
