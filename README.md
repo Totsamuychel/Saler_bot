@@ -1,291 +1,63 @@
-# 🤖 Telegram-бот для покупки талонов на бензин
+# 🤖 Telegram Bot for Fuel Voucher Sales
 
-Полнофункциональный Telegram-бот на aiogram 3.x для продажи талонов на топливо с системой подтверждения платежей администратором.
+A full-featured Telegram bot built with aiogram 3.x for selling fuel vouchers, with manual payment confirmation by an administrator.
 
-## 🚀 Возможности
+## 🚀 Features
 
-### Для пользователей:
-- 💰 Просмотр актуальных цен (розница/опт)
-- 🛒 Покупка талонов на топливо
-- 🧾 Просмотр своих талонов
-- 📱 QR-коды для использования на заправке
-- 🎁 Реферальная система
-- 🌐 Поддержка двух языков (русский/украинский)
-- 📞 Контакты службы поддержки
+### For Users:
+- 💰 View current prices (retail / wholesale)
+- 🛒 Purchase fuel vouchers
+- 🧾 View your vouchers
+- 📱 QR codes for use at the gas station
+- 🎁 Referral system
+- 🌐 Two-language support (Russian / Ukrainian)
+- 📞 Support contacts
 
-### Для администраторов:
-- ⚙️ Админ-панель с полным управлением
-- ✅ Подтверждение платежей вручную
-- 📊 Статистика продаж и пользователей
-- 📬 Массовая рассылка сообщений
-- 👥 Управление пользователями
-- 🧾 История всех платежей
+### For Administrators:
+- ⚙️ Admin panel with full control
+- ✅ Manual payment confirmation
+- 📊 Sales and user statistics
+- 📬 Mass message broadcasting
+- 👥 User management
+- 🧾 Full payment history
 
-## 📋 Требования
+## 📋 Requirements
 
 - Python 3.10+
 - SQLite
 - Telegram Bot Token
 
-## 🛠 Установка
+## 🛠 Installation
 
-1. **Клонируйте репозиторий:**
-```bash
-git clone <repository-url>
-cd fuel-talon-bot
-```
+1. `git clone ... && cd fuel-talon-bot`
+2. `pip install -r requirements.txt` (or run `fix_dependencies.py`)
+3. Configure `.env` with `BOT_TOKEN` and `ADMIN_IDS` (use `get_my_id.py` or `setup.py`)
+4. `python main.py`
 
-2. **Установите зависимости:**
-
-Если у вас есть конфликты зависимостей:
-```bash
-python fix_dependencies.py
-```
-
-Или установите минимальные зависимости:
-```bash
-pip install -r requirements-minimal.txt
-```
-
-Обычная установка:
-```bash
-pip install -r requirements.txt
-```
-
-3. **Настройте переменные окружения:**
-
-У вас уже есть `.env` файл с BOT_TOKEN. Теперь нужно получить ваш Telegram ID:
-
-```bash
-# Получите ваш Telegram ID
-python get_my_id.py
-```
-
-Напишите боту `/start` в Telegram, скопируйте ваш ID и обновите `.env`:
-```env
-ADMIN_IDS=ваш_telegram_id_здесь
-```
-
-Или запустите автоматическую настройку:
-```bash
-python setup.py
-```
-
-4. **Запустите бота:**
-```bash
-python main.py
-```
-
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 fuel-talon-bot/
-├── main.py                 # Основной файл запуска
-├── config.py              # Конфигурация
-├── database.py            # Работа с базой данных
-├── requirements.txt       # Зависимости
-├── .env.example          # Пример переменных окружения
-├── handlers/             # Обработчики команд
-│   ├── __init__.py
-│   ├── start.py         # Команда /start и главное меню
-│   ├── menu.py          # Основные функции меню
-│   ├── admin.py         # Админ-панель
-│   ├── payment.py       # Обработка платежей
-│   └── support.py       # Поддержка
-├── keyboards/           # Клавиатуры
-│   ├── __init__.py
-│   ├── main_menu.py     # Главное меню
-│   ├── admin_menu.py    # Админ-панель
-│   └── inline_payment.py # Inline-клавиатуры
-└── utils/              # Утилиты
-    ├── __init__.py
-    ├── translations.py  # Переводы
-    ├── price_calculator.py # Расчет цен
-    └── qr_generator.py  # Генерация QR-кодов
+├── main.py
+├── config.py
+├── database.py
+├── handlers/
+├── keyboards/
+└── utils/
 ```
 
-## 🗄 База данных
+## 🗄 Database
 
-Бот использует SQLite с тремя основными таблицами:
+Tables: `users`, `talons`, `payments`
 
-### users
-- `id` - автоинкремент
-- `telegram_id` - ID пользователя в Telegram
-- `username` - имя пользователя
-- `full_name` - полное имя
-- `language` - выбранный язык
-- `ref_code` - реферальный код
-- `referred_by` - кто пригласил
-- `bonus_balance` - баланс бонусов
-- `created_at` - дата регистрации
-
-### talons
-- `id` - автоинкремент
-- `user_id` - ID пользователя
-- `liters` - количество литров
-- `price` - цена
-- `status` - статус (pending/active/used)
-- `qr_code_path` - путь к QR-коду
-- `created_at` - дата создания
-- `used_at` - дата использования
-
-### payments
-- `id` - автоинкремент
-- `user_id` - ID пользователя
-- `talon_id` - ID талона
-- `amount` - сумма
-- `status` - статус (pending/confirmed)
-- `tx_id` - ID транзакции
-- `confirmed_by` - кто подтвердил
-- `created_at` - дата создания
-- `confirmed_at` - дата подтверждения
-
-## ⚙️ Конфигурация
-
-### Основные настройки в `config.py`:
+## ⚙️ Configuration (`config.py`)
 
 ```python
-# Цены
-RETAIL_PRICE = 55      # грн за литр (розница)
-WHOLESALE_PRICE = 52   # грн за литр (опт)
-WHOLESALE_THRESHOLD = 100  # литров для оптовой цены
-
-# Реферальный бонус
-REFERRAL_BONUS = 50    # грн за приглашение
+RETAIL_PRICE = 55       # UAH/liter
+WHOLESALE_PRICE = 52    # UAH/liter (from 100L)
+REFERRAL_BONUS = 50     # UAH
 ```
 
-## 🔧 Использование
+## 📄 License
 
-### Для пользователей:
-
-1. Запустите бота командой `/start`
-2. Выберите "💰 Прайс-лист"
-3. Укажите тип топлива и количество
-4. Подтвердите заказ
-5. Дождитесь подтверждения от администратора
-6. Получите QR-код талона
-
-### Для администраторов:
-
-1. Добавьте свой Telegram ID в `ADMIN_IDS`
-2. Используйте "⚙️ Админ-панель" для управления
-3. Подтверждайте платежи через уведомления
-4. Просматривайте статистику и управляйте пользователями
-
-## 🌐 Многоязычность
-
-Бот поддерживает русский и украинский языки. Переводы находятся в `utils/translations.py`.
-
-Для добавления нового языка:
-1. Добавьте переводы в `TRANSLATIONS`
-2. Обновите `LANGUAGES` в `config.py`
-3. Добавьте кнопку выбора языка
-
-## 📝 Логирование
-
-Логи сохраняются в файл `bot.log` и выводятся в консоль.
-
-Уровни логирования:
-- `INFO` - основные события
-- `ERROR` - ошибки
-- `DEBUG` - отладочная информация
-
-## 🔒 Безопасность
-
-- Проверка прав администратора для всех админ-функций
-- Валидация пользовательского ввода
-- Безопасное хранение токенов в переменных окружения
-- Логирование всех важных операций
-
-## 🛠 Решение проблем
-
-### Конфликты зависимостей
-
-Если при установке возникают конфликты версий пакетов:
-
-1. **Автоматическое исправление:**
-```bash
-python fix_dependencies.py
-```
-
-2. **Ручное исправление:**
-```bash
-# Удалите конфликтующие пакеты
-pip uninstall blendmodes chromadb fastapi langchain langchain-core ollama
-
-# Установите минимальные зависимости
-pip install -r requirements-minimal.txt
-```
-
-3. **Использование виртуального окружения:**
-```bash
-python -m venv bot_env
-source bot_env/bin/activate  # Linux/Mac
-# или
-bot_env\Scripts\activate     # Windows
-pip install -r requirements.txt
-```
-
-### Ошибки базы данных
-
-Если возникают ошибки с базой данных:
-```bash
-# Удалите файл базы данных
-rm bot.db
-
-# Перезапустите бота для пересоздания БД
-python main.py
-```
-
-### Проблемы с QR-кодами
-
-Если не создаются QR-коды:
-```bash
-# Проверьте установку Pillow
-pip install --upgrade pillow
-
-# Создайте директорию вручную
-mkdir qr_codes
-```
-
-## 🚀 Развертывание
-
-### На VPS/сервере:
-
-1. Установите Python 3.10+
-2. Клонируйте репозиторий
-3. Настройте виртуальное окружение
-4. Установите зависимости
-5. Настройте systemd service для автозапуска
-
-### Пример systemd service:
-
-```ini
-[Unit]
-Description=Fuel Talon Bot
-After=network.target
-
-[Service]
-Type=simple
-User=bot
-WorkingDirectory=/path/to/bot
-ExecStart=/path/to/venv/bin/python main.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-## 🤝 Поддержка
-
-Если у вас есть вопросы или предложения:
-- Создайте Issue в репозитории
-- Свяжитесь с разработчиком
-
-## 📄 Лицензия
-
-MIT License - см. файл LICENSE для деталей.
-
----
-
-**Создано с ❤️ для удобной покупки топлива**
+MIT
