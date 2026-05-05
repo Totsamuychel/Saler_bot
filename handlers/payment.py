@@ -13,7 +13,7 @@ router = Router()
 
 @router.callback_query(F.data == "confirm_payment")
 async def confirm_payment_handler(callback: CallbackQuery, state: FSMContext):
-    """Подтверждение оплаты пользователем"""
+    """Confirmation of payment by the user"""
     data = await state.get_data()
     user_id = callback.from_user.id
     
@@ -25,13 +25,13 @@ async def confirm_payment_handler(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Ошибка: данные о покупке не найдены")
         return
     
-    # Создаем талон
+    # Create a coupon
     talon_id = await db.create_talon(user_id, quantity, total_price)
     if not talon_id:
         await callback.answer("Ошибка создания талона")
         return
     
-    # Создаем запись о платеже
+    # Create a payment record
     payment_id = await db.create_payment(user_id, talon_id, total_price)
     if not payment_id:
         await callback.answer("Ошибка создания платежа")
@@ -40,7 +40,7 @@ async def confirm_payment_handler(callback: CallbackQuery, state: FSMContext):
     user = await db.get_user(user_id)
     language = user.get("language", "ru") if user else "ru"
     
-    # Уведомляем пользователя
+    # Notifying the user
     payment_text = get_text("payment_created", language).format(
         talon_id=talon_id,
         quantity=quantity,
@@ -49,14 +49,14 @@ async def confirm_payment_handler(callback: CallbackQuery, state: FSMContext):
     
     await callback.message.edit_text(payment_text)
     
-    # Уведомляем админов о новом платеже
+    # We notify admins about a new payment
     await notify_admins_about_payment(callback.bot, user_id, payment_id, total_price, quantity)
     
     await state.clear()
 
 @router.callback_query(F.data == "cancel_payment")
 async def cancel_payment_handler(callback: CallbackQuery, state: FSMContext):
-    """Отмена платежа"""
+    """Payment cancellation"""
     user = await db.get_user(callback.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
@@ -66,7 +66,7 @@ async def cancel_payment_handler(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.startswith("confirm_admin_"))
 async def admin_confirm_payment(callback: CallbackQuery):
-    """Подтверждение платежа админом"""
+    """Payment confirmation by the administrator"""
     if callback.from_user.id not in config.ADMIN_IDS:
         await callback.answer("У вас нет прав для этого действия")
         return
@@ -74,11 +74,11 @@ async def admin_confirm_payment(callback: CallbackQuery):
     payment_id = int(callback.data.split("_")[2])
     admin_id = callback.from_user.id
     
-    # Подтверждаем платеж
+    # Confirming the payment
     success = await db.confirm_payment(payment_id, admin_id)
     
     if success:
-        # Получаем информацию о платеже
+        # Receiving payment information
         payments = await db.get_pending_payments()
         payment_info = None
         
@@ -88,10 +88,10 @@ async def admin_confirm_payment(callback: CallbackQuery):
                 break
         
         if payment_info:
-            # Генерируем QR-код для талона
+            # Generate a QR code for the coupon
             qr_path = await generate_qr_code(payment_info["talon_id"])
             
-            # Уведомляем пользователя об активации талона
+            # We notify the user about the activation of the coupon
             await notify_user_about_activation(
                 callback.bot, 
                 payment_info["user_id"], 
@@ -109,20 +109,20 @@ async def admin_confirm_payment(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("reject_admin_"))
 async def admin_reject_payment(callback: CallbackQuery):
-    """Отклонение платежа админом"""
+    """Payment declined by admin"""
     if callback.from_user.id not in config.ADMIN_IDS:
         await callback.answer("У вас нет прав для этого действия")
         return
     
     payment_id = int(callback.data.split("_")[2])
     
-    # Здесь можно добавить логику отклонения платежа
+    
     await callback.message.edit_text(
         f"❌ Платеж #{payment_id} отклонен."
     )
 
 async def notify_admins_about_payment(bot, user_id: int, payment_id: int, amount: int, liters: int):
-    """Уведомление админов о новом платеже"""
+    """Notifying admins about a new payment"""
     user = await db.get_user(user_id)
     username = user.get("username", "неизвестно") if user else "неизвестно"
     full_name = user.get("full_name", "неизвестно") if user else "неизвестно"
@@ -148,7 +148,7 @@ async def notify_admins_about_payment(bot, user_id: int, payment_id: int, amount
             logger.error(f"Failed to notify admin {admin_id}: {e}")
 
 async def notify_user_about_activation(bot, user_id: int, talon_id: int, liters: int, qr_path: str):
-    """Уведомление пользователя об активации талона"""
+    """Notifying the user about the activation of the coupon"""
     user = await db.get_user(user_id)
     language = user.get("language", "ru") if user else "ru"
     
@@ -158,7 +158,7 @@ async def notify_user_about_activation(bot, user_id: int, talon_id: int, liters:
     )
     
     try:
-        # Отправляем QR-код
+        # Sending a QR code
         if qr_path:
             with open(qr_path, 'rb') as qr_file:
                 await bot.send_photo(
