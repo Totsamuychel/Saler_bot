@@ -1,5 +1,5 @@
 @echo off
-REM Batch файл с командами для Windows
+REM Batch file with commands for Windows
 
 if "%1"=="install" goto install
 if "%1"=="setup" goto setup
