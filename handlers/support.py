@@ -10,13 +10,13 @@ router = Router()
 
 @router.message(F.text.in_(["📞 Поддержка", "📞 Підтримка"]))
 async def support_handler(message: Message):
-    """Меню поддержки"""
+    """Menu of support"""
     user = await db.get_user(message.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
     support_text = get_text("support_menu", language)
     
-    # Создаем клавиатуру с контактами
+    # Create a keyboard with contacts
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
