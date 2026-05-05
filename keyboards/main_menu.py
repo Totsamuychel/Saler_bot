@@ -3,7 +3,7 @@ from utils.translations import get_text
 import config
 
 def get_main_menu(language: str = "ru") -> ReplyKeyboardMarkup:
-    """Главное меню для пользователей"""
+    """Main menu for users"""
     buttons = [
         [
             KeyboardButton(text=get_text("price_list_btn", language)),
@@ -19,8 +19,8 @@ def get_main_menu(language: str = "ru") -> ReplyKeyboardMarkup:
         ]
     ]
     
-    # Добавляем кнопку админ-панели для администраторов
-    # Эта кнопка будет видна всем, но работать только у админов
+    # Adding an admin panel button for administrators
+    # This button will be visible to everyone, but will only work for admins.
     buttons.append([
         KeyboardButton(text=get_text("admin_panel_btn", language))
     ])
