@@ -11,12 +11,12 @@ router = Router()
 
 @router.message(CommandStart())
 async def start_handler(message: Message):
-    """Обработчик команды /start"""
+    """Handler command /start"""
     user_id = message.from_user.id
     username = message.from_user.username
     full_name = message.from_user.full_name
     
-    # Проверяем реферальный код
+    # Checking the referral code
     referred_by = None
     if message.text and len(message.text.split()) > 1:
         ref_code = message.text.split()[1]
@@ -26,14 +26,14 @@ async def start_handler(message: Message):
             except ValueError:
                 pass
     
-    # Добавляем пользователя в базу
+    # Add user to DB
     await db.add_user(user_id, username, full_name, referred_by=referred_by)
     
-    # Получаем пользователя для определения языка
+    # Getting a user to determine the language
     user = await db.get_user(user_id)
     language = user.get("language", "ru") if user else "ru"
     
-    # Приветственное сообщение
+    # Welcome message
     welcome_text = get_text("welcome", language)
     
     await message.answer(
@@ -46,7 +46,7 @@ async def start_handler(message: Message):
 @router.message(F.text == "🏠 Главное меню")
 @router.message(F.text == "🏠 Головне меню")
 async def main_menu_handler(message: Message):
-    """Возврат в главное меню"""
+    """Back to main menu"""
     user = await db.get_user(message.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
