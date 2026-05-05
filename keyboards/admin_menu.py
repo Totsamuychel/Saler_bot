@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from utils.translations import get_text
 
 def get_admin_menu(language: str = "ru") -> ReplyKeyboardMarkup:
-    """Админ-панель"""
+    """Admin-panel"""
     buttons = [
         [
             KeyboardButton(text=get_text("statistics_btn", language)),
@@ -27,7 +27,7 @@ def get_admin_menu(language: str = "ru") -> ReplyKeyboardMarkup:
     )
 
 def get_broadcast_keyboard(language: str = "ru") -> InlineKeyboardMarkup:
-    """Клавиатура подтверждения рассылки"""
+    """Mailing confirmation keyboard"""
     return InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
