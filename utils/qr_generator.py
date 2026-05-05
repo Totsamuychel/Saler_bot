@@ -1,4 +1,4 @@
-"""Генератор QR-кодов для талонов"""
+"""QR code generator for coupons"""
 import qrcode
 import os
 from datetime import datetime
@@ -8,24 +8,24 @@ logger = logging.getLogger(__name__)
 
 async def generate_qr_code(talon_id: int) -> str:
     """
-    Генерирует QR-код для талона
+    Generates QR-code for coupons
     
     Args:
-        talon_id: ID талона
+        talon_id: ID of coupon
         
     Returns:
-        Путь к файлу с QR-кодом
+        Path to file with QR-code
     """
     try:
-        # Создаем директорию для QR-кодов если её нет
+        # Create directory for QR-code if not exist
         qr_dir = "qr_codes"
         if not os.path.exists(qr_dir):
             os.makedirs(qr_dir)
         
-        # Данные для QR-кода
+        # Data for QR-code
         qr_data = f"TALON_{talon_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        # Создаем QR-код
+        # Create QR-code
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -35,10 +35,10 @@ async def generate_qr_code(talon_id: int) -> str:
         qr.add_data(qr_data)
         qr.make(fit=True)
         
-        # Создаем изображение
+        # Create img
         img = qr.make_image(fill_color="black", back_color="white")
         
-        # Сохраняем файл
+        # Save file
         filename = f"talon_{talon_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         filepath = os.path.join(qr_dir, filename)
         img.save(filepath)
@@ -52,10 +52,10 @@ async def generate_qr_code(talon_id: int) -> str:
 
 def cleanup_old_qr_codes(days_old: int = 30):
     """
-    Удаляет старые QR-коды
+    Delete old QR-code
     
     Args:
-        days_old: Возраст файлов в днях для удаления
+        days_old: File age in days to delete
     """
     try:
         qr_dir = "qr_codes"
