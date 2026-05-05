@@ -61,3 +61,34 @@ REFERRAL_BONUS = 50     # UAH
 ## 📄 License
 
 MIT
+
+## 📈 Bot Workflow
+
+```mermaid
+graph TD
+    A([User sends /start]) --> B[Bot shows language selection]
+    B --> C{User selects language}
+    C -->|RU| D[Main Menu in Russian]
+    C -->|UA| E[Main Menu in Ukrainian]
+
+    D & E --> F{Menu action}
+
+    F -->|View prices| G[Show retail & wholesale prices]
+    F -->|Buy voucher| H[Select fuel volume]
+    F -->|My vouchers| I[Show voucher list with QR codes]
+    F -->|Referral| J[Show referral link & bonus balance]
+    F -->|Support| K[Show support contacts]
+
+    H --> L[Enter payment amount]
+    L --> M[User sends payment screenshot]
+    M --> N[/Admin receives payment request/]
+    N --> O{Admin decision}
+    O -->|Confirm| P[Voucher created in DB]
+    O -->|Reject| Q[User notified: payment rejected]
+    P --> R[User receives voucher + QR code]
+
+    style A fill:#2d6a4f,color:#fff
+    style N fill:#e76f51,color:#fff
+    style P fill:#457b9d,color:#fff
+    style R fill:#2d6a4f,color:#fff
+```
