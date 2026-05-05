@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Production runner для Telegram-бота
-Включает дополнительные проверки и обработку ошибок
+Production runner for Telegram bot
+Includes additional checks and error handling
 """
 
 import asyncio
@@ -10,52 +10,52 @@ import signal
 import sys
 from pathlib import Path
 
-# Добавляем текущую директорию в путь
+# Add the current directory to the path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from main import main
 import config
 
 def setup_logging():
-    """Настройка продакшн логирования"""
+    """Setting up production logging"""
     
-    # Создаем директорию для логов
+    # Create a directory for logs
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     
-    # Настраиваем форматирование
+    # Setting up formatting
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
     
-    # Файловый хендлер
+    # File handler
     file_handler = logging.FileHandler(log_dir / "bot.log", encoding='utf-8')
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)
     
-    # Хендлер для ошибок
+    # error handler
     error_handler = logging.FileHandler(log_dir / "errors.log", encoding='utf-8')
     error_handler.setFormatter(formatter)
     error_handler.setLevel(logging.ERROR)
     
-    # Консольный хендлер
+    # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
     console_handler.setLevel(logging.INFO)
     
-    # Настраиваем root logger
+    # Setting up a root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
     root_logger.addHandler(file_handler)
     root_logger.addHandler(error_handler)
     root_logger.addHandler(console_handler)
     
-    # Отключаем лишние логи от библиотек
+    # Disabling unnecessary logs from libraries
     logging.getLogger("aiogram").setLevel(logging.WARNING)
     logging.getLogger("aiohttp").setLevel(logging.WARNING)
 
 def check_config():
-    """Проверка конфигурации перед запуском"""
+    """Checking the configuration before launch"""
     errors = []
     
     if not config.BOT_TOKEN:
@@ -82,12 +82,12 @@ def check_config():
     print("✅ Конфигурация проверена")
 
 def signal_handler(signum, frame):
-    """Обработчик сигналов для graceful shutdown"""
+    """Signal handler for graceful shutdown"""
     print(f"\n🛑 Получен сигнал {signum}. Завершение работы...")
     sys.exit(0)
 
 async def run_with_restart():
-    """Запуск с автоматическим перезапуском при ошибках"""
+    """Launch with automatic restart on errors"""
     restart_count = 0
     max_restarts = 5
     
@@ -117,17 +117,17 @@ if __name__ == "__main__":
     print("🤖 Fuel Talon Bot - Production Runner")
     print("=" * 50)
     
-    # Настраиваем обработчики сигналов
+    # Setting up signal handlers
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     
-    # Настраиваем логирование
+    # Setting up logging
     setup_logging()
     
-    # Проверяем конфигурацию
+    # Checking the configuration
     check_config()
     
-    # Запускаем бота
+    # Launching the bot
     try:
         asyncio.run(run_with_restart())
     except Exception as e:
