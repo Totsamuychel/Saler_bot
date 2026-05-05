@@ -1,8 +1,8 @@
-"""Система переводов для бота"""
+"""Translation system for a bot"""
 
 TRANSLATIONS = {
     "ru": {
-        # Основные сообщения
+        # Main messages
         "welcome": """👋 Привет! Я — бот для покупки талонов на солярку. 
 
 Здесь вы можете быстро заказать, оплатить и получить цифровой талон.
@@ -11,7 +11,7 @@ TRANSLATIONS = {
         
         "main_menu": "🏠 Главное меню\n\nВыберите нужное действие:",
         
-        # Прайс-лист
+        # Price list
         "price_list": """💰 Актуальные цены на топливо:
 
 ⛽ Дизельное топливо (солярка):
@@ -33,7 +33,7 @@ TRANSLATIONS = {
         
         "invalid_quantity": "❌ Неверное количество! Введите число от 1 до 1000.",
         
-        # Платежи
+        # Payments
         "payment_created": """✅ Заказ создан!
 
 🎫 Номер талона: #{talon_id}
@@ -51,14 +51,14 @@ TRANSLATIONS = {
 
 Покажите этот QR-код на заправке для получения топлива.""",
         
-        # Талоны
+        # Coupons
         "no_talons": "📋 У вас пока нет талонов.",
         "your_talons": "🧾 Ваши талоны:",
         "status_active": "Активен",
         "status_used": "Использован",
         "status_pending": "Ожидает подтверждения",
         
-        # Инструкция
+        # Instruction
         "how_it_works": """💡 Как работает бот:
 
 1️⃣ Выберите "💰 Прайс-лист"
@@ -74,10 +74,10 @@ TRANSLATIONS = {
 • Цифровые талоны
 • Поддержка 24/7""",
         
-        # Языки
+        # Languages
         "language_changed": "✅ Язык изменен на русский",
         
-        # Реферальная система
+        # Referral system
         "referral_info": """🎁 Пригласи друга и получи бонус!
 
 Твоя реферальная ссылка:
@@ -87,12 +87,12 @@ TRANSLATIONS = {
 
 Поделись ссылкой с друзьями и экономь на топливе! ⛽""",
         
-        # Поддержка
+        # Support
         "support_menu": """📞 Служба поддержки
 
 Выберите способ связи:""",
         
-        # Админ-панель
+        # Admin-panel
         "admin_panel": "⚙️ Админ-панель\n\nВыберите действие:",
         
         "statistics": """📊 Статистика бота:
@@ -118,7 +118,7 @@ TRANSLATIONS = {
         
         "manage_talons": "➕ Управление талонами\n\nФункция в разработке.",
         
-        # Кнопки
+        # buttons
         "price_list_btn": "💰 Прайс-лист",
         "my_talons_btn": "🧾 Мои талоны",
         "how_it_works_btn": "💡 Как работает бот",
@@ -128,14 +128,14 @@ TRANSLATIONS = {
         "admin_panel_btn": "⚙️ Админ-панель",
         "main_menu_btn": "🏠 Главное меню",
         
-        # Админ кнопки
+        # Admin buttons
         "statistics_btn": "📊 Статистика",
         "users_btn": "👥 Пользователи",
         "payments_history_btn": "🧾 История платежей",
         "manage_talons_btn": "➕ Управление талонами",
         "broadcast_btn": "📬 Рассылка",
         
-        # Inline кнопки
+        # Inline buttons
         "fuel_diesel": "⛽ Дизельное топливо",
         "fuel_gasoline": "⛽ Бензин",
         "custom_quantity": "✏️ Ввести свое количество",
@@ -147,13 +147,13 @@ TRANSLATIONS = {
         "write_telegram": "✉️ Написать в Telegram",
         "instagram": "📷 Instagram",
         
-        # Типы цен
+        # Type of prices
         "retail": "розница",
         "wholesale": "опт",
     },
     
     "uk": {
-        # Основні повідомлення
+        # Main messages
         "welcome": """👋 Привіт! Я — бот для покупки талонів на солярку.
 
 Тут ви можете швидко замовити, оплатити та отримати цифровий талон.
@@ -162,7 +162,7 @@ TRANSLATIONS = {
         
         "main_menu": "🏠 Головне меню\n\nОберіть потрібну дію:",
         
-        # Прайс-лист
+        # Price-list
         "price_list": """💰 Актуальні ціни на паливо:
 
 ⛽ Дизельне паливо (солярка):
@@ -184,7 +184,7 @@ TRANSLATIONS = {
         
         "invalid_quantity": "❌ Невірна кількість! Введіть число від 1 до 1000.",
         
-        # Платежі
+        # Payments
         "payment_created": """✅ Замовлення створено!
 
 🎫 Номер талона: #{talon_id}
@@ -202,14 +202,14 @@ TRANSLATIONS = {
 
 Покажіть цей QR-код на заправці для отримання палива.""",
         
-        # Талони
+        # Coupons
         "no_talons": "📋 У вас поки немає талонів.",
         "your_talons": "🧾 Ваші талони:",
         "status_active": "Активний",
         "status_used": "Використаний",
         "status_pending": "Очікує підтвердження",
         
-        # Інструкція
+        # Instrucion
         "how_it_works": """💡 Як працює бот:
 
 1️⃣ Оберіть "💰 Прайс-лист"
@@ -225,10 +225,10 @@ TRANSLATIONS = {
 • Цифрові талони
 • Підтримка 24/7""",
         
-        # Мови
+        # Languages
         "language_changed": "✅ Мову змінено на українську",
         
-        # Реферальна система
+        # Referral system
         "referral_info": """🎁 Запроси друга і отримай бонус!
 
 Твоє реферальне посилання:
@@ -238,12 +238,12 @@ TRANSLATIONS = {
 
 Поділись посиланням з друзями та економ на паливі! ⛽""",
         
-        # Підтримка
+        # Support
         "support_menu": """📞 Служба підтримки
 
 Оберіть спосіб зв'язку:""",
         
-        # Адмін-панель
+        # Admin-panel
         "admin_panel": "⚙️ Адмін-панель\n\nОберіть дію:",
         
         "statistics": """📊 Статистика бота:
@@ -269,7 +269,7 @@ TRANSLATIONS = {
         
         "manage_talons": "➕ Управління талонами\n\nФункція в розробці.",
         
-        # Кнопки
+        # Buttons
         "price_list_btn": "💰 Прайс-лист",
         "my_talons_btn": "🧾 Мої талони",
         "how_it_works_btn": "💡 Як працює бот",
@@ -279,14 +279,14 @@ TRANSLATIONS = {
         "admin_panel_btn": "⚙️ Адмін-панель",
         "main_menu_btn": "🏠 Головне меню",
         
-        # Адмін кнопки
+        # Адмін Buttons
         "statistics_btn": "📊 Статистика",
         "users_btn": "👥 Користувачі",
         "payments_history_btn": "🧾 Історія платежів",
         "manage_talons_btn": "➕ Управління талонами",
         "broadcast_btn": "📬 Розсилка",
         
-        # Inline кнопки
+        # Inline Buttons
         "fuel_diesel": "⛽ Дизельне паливо",
         "fuel_gasoline": "⛽ Бензин",
         "custom_quantity": "✏️ Ввести свою кількість",
@@ -298,7 +298,7 @@ TRANSLATIONS = {
         "write_telegram": "✉️ Написати в Telegram",
         "instagram": "📷 Instagram",
         
-        # Типи цін
+        # Type of prices
         "retail": "роздріб",
         "wholesale": "опт",
     }
