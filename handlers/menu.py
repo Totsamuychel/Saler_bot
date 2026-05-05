@@ -20,7 +20,7 @@ class PurchaseStates(StatesGroup):
 
 @router.message(F.text.in_(["💰 Прайс-лист", "💰 Прайс-лист"]))
 async def price_list_handler(message: Message, state: FSMContext):
-    """Показ прайс-листа и начало покупки"""
+    """Show the price list and start shopping"""
     user = await db.get_user(message.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
@@ -38,7 +38,7 @@ async def price_list_handler(message: Message, state: FSMContext):
 
 @router.callback_query(F.data.startswith("fuel_"))
 async def fuel_selected(callback: CallbackQuery, state: FSMContext):
-    """Выбор типа топлива"""
+    """Selecting a fuel type"""
     fuel_type = callback.data.split("_")[1]
     await state.update_data(fuel_type=fuel_type)
     
@@ -55,12 +55,12 @@ async def fuel_selected(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.startswith("qty_"))
 async def quantity_selected(callback: CallbackQuery, state: FSMContext):
-    """Выбор количества литров"""
+    """Select the number of liters"""
     quantity = int(callback.data.split("_")[1])
     data = await state.get_data()
     fuel_type = data.get("fuel_type")
     
-    # Рассчитываем цену
+    # We calculate the price
     total_price = calculate_price(quantity)
     
     await state.update_data(quantity=quantity, total_price=total_price)
@@ -68,7 +68,7 @@ async def quantity_selected(callback: CallbackQuery, state: FSMContext):
     user = await db.get_user(callback.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
-    # Определяем тип цены
+    # Determine the price type
     price_type = "wholesale" if quantity >= config.WHOLESALE_THRESHOLD else "retail"
     price_per_liter = config.WHOLESALE_PRICE if quantity >= config.WHOLESALE_THRESHOLD else config.RETAIL_PRICE
     
@@ -88,7 +88,7 @@ async def quantity_selected(callback: CallbackQuery, state: FSMContext):
 
 @router.message(F.text.regexp(r'^\d+$'))
 async def custom_quantity_handler(message: Message, state: FSMContext):
-    """Обработка пользовательского количества литров"""
+    """Processing a custom amount of liters"""
     current_state = await state.get_state()
     if current_state != PurchaseStates.entering_quantity:
         return
@@ -105,7 +105,7 @@ async def custom_quantity_handler(message: Message, state: FSMContext):
         data = await state.get_data()
         fuel_type = data.get("fuel_type")
         
-        # Рассчитываем цену
+        # We calculate the price
         total_price = calculate_price(quantity)
         
         await state.update_data(quantity=quantity, total_price=total_price)
@@ -113,7 +113,7 @@ async def custom_quantity_handler(message: Message, state: FSMContext):
         user = await db.get_user(message.from_user.id)
         language = user.get("language", "ru") if user else "ru"
         
-        # Определяем тип цены
+        # Determine the price type
         price_type = "wholesale" if quantity >= config.WHOLESALE_THRESHOLD else "retail"
         price_per_liter = config.WHOLESALE_PRICE if quantity >= config.WHOLESALE_THRESHOLD else config.RETAIL_PRICE
         
@@ -139,7 +139,7 @@ async def custom_quantity_handler(message: Message, state: FSMContext):
 
 @router.message(F.text.in_(["🧾 Мои талоны", "🧾 Мої талони"]))
 async def my_talons_handler(message: Message):
-    """Показ талонов пользователя"""
+    """Show user tickets"""
     user_id = message.from_user.id
     user = await db.get_user(user_id)
     language = user.get("language", "ru") if user else "ru"
@@ -167,7 +167,7 @@ async def my_talons_handler(message: Message):
 
 @router.message(F.text.in_(["💡 Как работает бот", "💡 Як працює бот"]))
 async def how_it_works_handler(message: Message):
-    """Инструкция по работе с ботом"""
+    """Instructions for using the bot"""
     user = await db.get_user(message.from_user.id)
     language = user.get("language", "ru") if user else "ru"
     
@@ -176,7 +176,7 @@ async def how_it_works_handler(message: Message):
 
 @router.message(F.text.in_(["🌐 Язык", "🌐 Мова"]))
 async def language_handler(message: Message):
-    """Выбор языка"""
+    """Language selection"""
     from keyboards.inline_payment import get_language_keyboard
     
     await message.answer(
@@ -186,7 +186,7 @@ async def language_handler(message: Message):
 
 @router.callback_query(F.data.startswith("lang_"))
 async def language_selected(callback: CallbackQuery):
-    """Смена языка"""
+    """Change language"""
     language = callback.data.split("_")[1]
     user_id = callback.from_user.id
     
@@ -195,7 +195,7 @@ async def language_selected(callback: CallbackQuery):
     success_text = get_text("language_changed", language)
     await callback.message.edit_text(success_text)
     
-    # Показываем обновленное главное меню
+    # We present the updated main menu
     await callback.message.answer(
         get_text("main_menu", language),
         reply_markup=get_main_menu(language)
@@ -203,7 +203,7 @@ async def language_selected(callback: CallbackQuery):
 
 @router.message(F.text.in_(["🎁 Пригласи друга", "🎁 Запроси друга"]))
 async def referral_handler(message: Message):
-    """Реферальная система"""
+    """Referral system"""
     user_id = message.from_user.id
     user = await db.get_user(user_id)
     language = user.get("language", "ru") if user else "ru"
